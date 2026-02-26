@@ -1,5 +1,5 @@
 import { ExtractWSRequestFrom } from "@beatsync/shared";
-import { generateAudioFileName, uploadBytes } from "../../lib/r2";
+import { generateAudioFileName, saveAudioFile } from "../../lib/localStorage";
 import { globalManager } from "../../managers";
 import { MUSIC_PROVIDER_MANAGER } from "../../managers/MusicProviderManager";
 import { sendBroadcast } from "../../utils/responses";
@@ -67,14 +67,14 @@ export const handleStreamMusic: HandlerFunction<
     // Get content type from response headers, fallback to audio/mpeg
     const contentType = response.headers.get("content-type") || "audio/mpeg";
 
-    // Upload directly to R2
-    console.log(`Uploading to R2: room-${roomId}/${fileName}`);
-    const r2Url = await uploadBytes(arrayBuffer, roomId, fileName, contentType);
+    // Save locally
+    console.log(`Saving locally: room-${roomId}/${fileName}`);
+    const localUrl = await saveAudioFile(roomId, fileName, new Uint8Array(arrayBuffer));
 
     // Add the audio source to the room and get updated sources list
-    const sources = room.addAudioSource({ url: r2Url });
+    const sources = room.addAudioSource({ url: localUrl });
 
-    console.log(`Successfully uploaded track to R2: ${r2Url}`);
+    console.log(`Successfully saved track locally: ${localUrl}`);
     console.log(
       `Broadcasting new audio sources to room ${roomId}: ${sources.length} total sources`
     );

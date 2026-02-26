@@ -1,5 +1,5 @@
 import { ExtractWSRequestFrom } from "@beatsync/shared";
-import { listObjectsWithPrefix } from "../../lib/r2";
+import { listDefaultAudioFiles } from "../../lib/localStorage";
 import { sendBroadcast } from "../../utils/responses";
 import { requireCanMutate } from "../middlewares";
 import { HandlerFunction } from "../types";
@@ -9,15 +9,11 @@ export const handleLoadDefaultTracks: HandlerFunction<
 > = async ({ ws, server }) => {
   const { room } = requireCanMutate(ws);
 
-  // List default objects from R2 and map to public URLs
-  const objects = await listObjectsWithPrefix("default/");
-  if (!objects || objects.length === 0) {
+  // List default audio files from local uploads/default directory
+  const urls = listDefaultAudioFiles();
+  if (!urls || urls.length === 0) {
     return;
   }
-
-  const urls = objects
-    .filter((obj) => !!obj.Key)
-    .map((obj) => ({ url: `${process.env.S3_PUBLIC_URL}/${obj.Key}` }));
 
   // Existing room sources and simple URL set for dedupe
   const existingUrlSet = new Set(room.getAudioSources().map((s) => s.url));
@@ -48,3 +44,4 @@ export const handleLoadDefaultTracks: HandlerFunction<
     },
   });
 };
+
