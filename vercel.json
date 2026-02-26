@@ -1,6 +1,4 @@
 {
-  "buildCommand": "cd apps/client && bun install && next build",
-  "outputDirectory": "apps/client/.next",
-  "installCommand": "bun install",
+  "rootDirectory": "apps/client",
   "framework": "nextjs"
 }
