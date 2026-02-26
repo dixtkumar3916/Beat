@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: beatsync-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: PUBLIC_SERVER_URL
+        sync: false   # You'll fill this in after first deploy
