@@ -6,4 +6,4 @@ services:
     plan: free
     envVars:
       - key: PUBLIC_SERVER_URL
-        sync: false   # You'll fill this in after first deploy
+        value: https://beatsync-server-i9tn.onrender.com
